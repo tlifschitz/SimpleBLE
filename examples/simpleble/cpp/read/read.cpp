@@ -1,5 +1,6 @@
 #include <chrono>
 #include <iostream>
+#include <iomanip>
 #include <thread>
 #include <vector>
 
@@ -30,11 +31,13 @@ int main() {
     // Scan for 5 seconds and return.
     adapter.scan_for(5000);
 
-    std::cout << "The following devices were found:" << std::endl;
-    for (size_t i = 0; i < peripherals.size(); i++) {
-        std::cout << "[" << i << "] " << peripherals[i].identifier() << " [" << peripherals[i].address() << "]"
-                  << std::endl;
-    }
+    // Sort by RSSI
+    std::sort(peripherals.begin(), peripherals.end(), [](SimpleBLE::Peripheral& a, SimpleBLE::Peripheral& b) {
+        return a.rssi() > b.rssi();
+    });
+
+    std::cout << "The following devices were found:" << std::endl << std::endl;
+    std::cout << Utils::peripheral_table(peripherals) << std::endl;
 
     auto selection = Utils::getUserInputInt("Please select a device to connect to", peripherals.size() - 1);
 
@@ -57,6 +60,8 @@ int main() {
     }
 
     std::cout << "The following services and characteristics were found:" << std::endl;
+    std::cout << Utils::service_characteristics_table(peripheral) << std::endl;
+
     for (size_t i = 0; i < uuids.size(); i++) {
         std::cout << "[" << i << "] " << uuids[i].first << " " << uuids[i].second << std::endl;
     }

@@ -48,7 +48,9 @@ int main() {
     std::vector<std::pair<SimpleBLE::BluetoothUUID, SimpleBLE::BluetoothUUID>> uuids;
     for (auto service : peripheral.services()) {
         for (auto characteristic : service.characteristics()) {
-            uuids.push_back(std::make_pair(service.uuid(), characteristic.uuid()));
+            if(characteristic.can_write_request()) {
+                uuids.push_back(std::make_pair(service.uuid(), characteristic.uuid()));
+            }
         }
     }
 

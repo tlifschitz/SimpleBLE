@@ -40,18 +40,21 @@ if __name__ == "__main__":
     service_characteristic_pair = []
     for service in services:
         for characteristic in service.characteristics():
-            service_characteristic_pair.append((service.uuid(), characteristic.uuid()))
+            service_characteristic_pair.append((service, characteristic))
 
     # Query the user to pick a service/characteristic pair
     print("Please select a service/characteristic pair:")
-    for i, (service_uuid, characteristic) in enumerate(service_characteristic_pair):
-        print(f"{i}: {service_uuid} {characteristic}")
+    for i, (service, characteristic) in enumerate(service_characteristic_pair):
+        print(f"{i}: {service.uuid()} {characteristic.uuid()}")
 
     choice = int(input("Enter choice: "))
-    service_uuid, characteristic_uuid = service_characteristic_pair[choice]
+    service, characteristic = service_characteristic_pair[choice]
 
     # Write the content to the characteristic
-    contents = peripheral.read(service_uuid, characteristic_uuid)
-    print(f"Contents: {contents}")
+    if characteristic.can_read():
+        contents = peripheral.read(service_uuid, characteristic_uuid)
+        print(f"Contents: {contents}")
+    else:
+        print("Characteristic is not readable")
 
     peripheral.disconnect()

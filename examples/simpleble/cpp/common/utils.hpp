@@ -2,6 +2,7 @@
 #define UTILS_HPP
 
 #include <optional>
+#include "tabulate.hpp"
 #include "simpleble/SimpleBLE.h"
 
 namespace Utils {
@@ -26,6 +27,17 @@ std::optional<std::size_t> getUserInputInt(const std::string& line, std::size_t 
  * @brief Pretty print a ByteArray
  */
 void print_byte_array(const SimpleBLE::ByteArray& bytes);
+
+/**
+* @brief Builds a pretty printable table of Peripherals with it's properties
+*/
+tabulate::Table peripheral_table(std::vector<SimpleBLE::Peripheral> peripherals);
+
+/**
+* @brief Builds a pretty printable table of services and characteristics
+*/
+tabulate::Table service_characteristics_table(SimpleBLE::Peripheral peripheral);
+
 }  // namespace Utils
 
 #endif
