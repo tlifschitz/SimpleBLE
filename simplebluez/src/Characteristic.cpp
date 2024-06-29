@@ -32,7 +32,7 @@ std::shared_ptr<GattCharacteristic1> Characteristic::gattcharacteristic1() {
 
 bool Characteristic::notifying() { return gattcharacteristic1()->Notifying(); }
 
-std::string Characteristic::uuid() { return gattcharacteristic1()->UUID(); }
+BluetoothUUID Characteristic::uuid() { return gattcharacteristic1()->UUID(); }
 
 ByteArray Characteristic::value() { return gattcharacteristic1()->Value(); }
 
@@ -54,7 +54,7 @@ void Characteristic::start_notify() { gattcharacteristic1()->StartNotify(); }
 
 void Characteristic::stop_notify() { gattcharacteristic1()->StopNotify(); }
 
-std::shared_ptr<Descriptor> Characteristic::get_descriptor(const std::string& uuid) {
+std::shared_ptr<Descriptor> Characteristic::get_descriptor(const BluetoothUUID& uuid) {
     auto descriptors_all = descriptors();
 
     for (auto& descriptor : descriptors_all) {

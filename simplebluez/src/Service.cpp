@@ -27,7 +27,7 @@ std::shared_ptr<GattService1> Service::gattservice1() {
 
 std::vector<std::shared_ptr<Characteristic>> Service::characteristics() { return children_casted<Characteristic>(); }
 
-std::shared_ptr<Characteristic> Service::get_characteristic(const std::string& uuid) {
+std::shared_ptr<Characteristic> Service::get_characteristic(const BluetoothUUID& uuid) {
     auto characteristics_all = characteristics();
 
     for (auto& characteristic : characteristics_all) {
@@ -39,4 +39,4 @@ std::shared_ptr<Characteristic> Service::get_characteristic(const std::string& u
     throw Exception::CharacteristicNotFoundException(uuid);
 }
 
-std::string Service::uuid() { return gattservice1()->UUID(); }
+BluetoothUUID Service::uuid() { return gattservice1()->UUID(); }

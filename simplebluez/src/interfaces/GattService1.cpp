@@ -5,7 +5,7 @@ using namespace SimpleBluez;
 GattService1::GattService1(std::shared_ptr<SimpleDBus::Connection> conn, std::string path)
     : SimpleDBus::Interface(conn, "org.bluez", path, "org.bluez.GattService1") {}
 
-std::string GattService1::UUID() {
+BluetoothUUID GattService1::UUID() {
     // As the UUID property doesn't change, we can cache it
     std::scoped_lock lock(_property_update_mutex);
     return _uuid;

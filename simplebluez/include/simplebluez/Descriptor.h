@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Proxy.h>
 
 #include <simplebluez/Types.h>
@@ -19,7 +20,7 @@ class Descriptor : public SimpleDBus::Proxy {
     void write(ByteArray value);
 
     // ----- PROPERTIES -----
-    std::string uuid();
+    BluetoothUUID uuid();
     ByteArray value();
 
     // ----- CALLBACKS -----

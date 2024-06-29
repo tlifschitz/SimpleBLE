@@ -35,7 +35,7 @@ ByteArray GattDescriptor1::ReadValue() {
     return Value();
 }
 
-std::string GattDescriptor1::UUID() {
+BluetoothUUID GattDescriptor1::UUID() {
     // As the UUID property doesn't change, we can cache it
     std::scoped_lock lock(_property_update_mutex);
     return _uuid;

@@ -12,12 +12,12 @@ class Service : public SimpleDBus::Proxy {
     Service(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~Service() = default;
 
-    std::shared_ptr<Characteristic> get_characteristic(const std::string& uuid);
+    std::shared_ptr<Characteristic> get_characteristic(const BluetoothUUID& uuid);
 
     // ----- PROPERTIES -----
     std::vector<std::shared_ptr<Characteristic>> characteristics();
 
-    std::string uuid();
+    BluetoothUUID uuid();
 
   private:
     std::shared_ptr<SimpleDBus::Proxy> path_create(const std::string& path) override;

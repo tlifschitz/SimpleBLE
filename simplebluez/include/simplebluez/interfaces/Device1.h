@@ -1,5 +1,7 @@
 #pragma once
 
+#include <simplebluez/Types.h>
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/external/kvn_safe_callback.hpp>
 
@@ -28,7 +30,7 @@ class Device1 : public SimpleDBus::Interface {
     std::string AddressType();
     std::string Alias();
     std::string Name();
-    std::vector<std::string> UUIDs();
+    std::vector<BluetoothUUID> UUIDs();
     std::map<uint16_t, ByteArray> ManufacturerData(bool refresh = true);
     std::map<std::string, ByteArray> ServiceData(bool refresh = true);
     bool Paired(bool refresh = true);

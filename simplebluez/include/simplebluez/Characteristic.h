@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Proxy.h>
 
 #include <simplebluez/Descriptor.h>
@@ -15,7 +16,7 @@ class Characteristic : public SimpleDBus::Proxy {
     Characteristic(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~Characteristic();
 
-    std::shared_ptr<Descriptor> get_descriptor(const std::string& uuid);
+    std::shared_ptr<Descriptor> get_descriptor(const BluetoothUUID& uuid);
 
     // ----- METHODS -----
     ByteArray read();
@@ -27,7 +28,7 @@ class Characteristic : public SimpleDBus::Proxy {
     // ----- PROPERTIES -----
     std::vector<std::shared_ptr<Descriptor>> descriptors();
 
-    std::string uuid();
+    BluetoothUUID uuid();
     ByteArray value();
     bool notifying();
     std::vector<std::string> flags();

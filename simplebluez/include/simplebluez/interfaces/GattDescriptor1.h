@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/external/kvn_safe_callback.hpp>
 
@@ -19,7 +20,7 @@ class GattDescriptor1 : public SimpleDBus::Interface {
     ByteArray ReadValue();
 
     // ----- PROPERTIES -----
-    std::string UUID();
+    BluetoothUUID UUID();
     ByteArray Value();
 
     // ----- CALLBACKS -----
@@ -29,7 +30,7 @@ class GattDescriptor1 : public SimpleDBus::Interface {
     void property_changed(std::string option_name) override;
     void update_value(SimpleDBus::Holder& new_value);
 
-    std::string _uuid;
+    BluetoothUUID _uuid;
     ByteArray _value;
 };
 

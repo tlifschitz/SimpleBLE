@@ -62,10 +62,10 @@ std::string Device1::Name() {
     return _properties["Name"].get_string();
 }
 
-std::vector<std::string> Device1::UUIDs() {
+std::vector<BluetoothUUID> Device1::UUIDs() {
     std::scoped_lock lock(_property_update_mutex);
 
-    std::vector<std::string> uuids;
+    std::vector<BluetoothUUID> uuids;
     for (SimpleDBus::Holder& uuid : _properties["UUIDs"].get_array()) {
         uuids.push_back(uuid.get_string());
     }

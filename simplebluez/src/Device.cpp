@@ -35,7 +35,7 @@ std::shared_ptr<Battery1> Device::battery1() {
 
 std::vector<std::shared_ptr<Service>> Device::services() { return children_casted<Service>(); }
 
-std::shared_ptr<Service> Device::get_service(const std::string& uuid) {
+std::shared_ptr<Service> Device::get_service(const BluetoothUUID& uuid) {
     auto services_all = services();
 
     for (auto& service : services_all) {
@@ -47,8 +47,8 @@ std::shared_ptr<Service> Device::get_service(const std::string& uuid) {
     throw Exception::ServiceNotFoundException(uuid);
 }
 
-std::shared_ptr<Characteristic> Device::get_characteristic(const std::string& service_uuid,
-                                                           const std::string& characteristic_uuid) {
+std::shared_ptr<Characteristic> Device::get_characteristic(const BluetoothUUID& service_uuid,
+                                                           const BluetoothUUID& characteristic_uuid) {
     auto service = get_service(service_uuid);
     return service->get_characteristic(characteristic_uuid);
 }
@@ -73,7 +73,7 @@ int16_t Device::rssi() { return device1()->RSSI(); }
 
 int16_t Device::tx_power() { return device1()->TxPower(); }
 
-std::vector<std::string> Device::uuids() { return device1()->UUIDs(); }
+std::vector<BluetoothUUID> Device::uuids() { return device1()->UUIDs(); }
 
 std::map<uint16_t, ByteArray> Device::manufacturer_data() { return device1()->ManufacturerData(); }
 

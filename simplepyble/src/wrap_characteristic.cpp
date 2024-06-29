@@ -45,7 +45,7 @@ constexpr auto kDocsCharacteristicCanIndicate = R"pbdoc(
 void wrap_characteristic(py::module& m) {
     // TODO: Add __str__ and __repr__ methods
     py::class_<SimpleBLE::Characteristic>(m, "Characteristic", kDocsCharacteristic)
-        .def("uuid", &SimpleBLE::Characteristic::uuid, kDocsCharacteristicUuid)
+        .def("uuid", [](SimpleBLE::Characteristic& s) { return s.uuid().str(); }, kDocsCharacteristicUuid)
         .def("descriptors", &SimpleBLE::Characteristic::descriptors, kDocsCharacteristicDescriptors)
         .def("capabilities", &SimpleBLE::Characteristic::capabilities, kDocsCharacteristicCapabilities)
         .def("can_read", &SimpleBLE::Characteristic::can_read, kDocsCharacteristicCanRead)

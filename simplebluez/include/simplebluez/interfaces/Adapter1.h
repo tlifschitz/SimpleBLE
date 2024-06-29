@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Interface.h>
 
 #include <optional>
@@ -13,7 +14,7 @@ class Adapter1 : public SimpleDBus::Interface {
     // ----- TYPES -----
     struct DiscoveryFilter {
         typedef enum { AUTO, BREDR, LE } TransportType;
-        std::vector<std::string> UUIDs = {};
+        std::vector<BluetoothUUID> UUIDs = {};
         std::optional<int16_t> RSSI;
         std::optional<uint16_t> Pathloss;
         TransportType Transport = TransportType::AUTO;

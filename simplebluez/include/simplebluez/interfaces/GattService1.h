@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Interface.h>
 
 #include <string>
@@ -14,12 +15,12 @@ class GattService1 : public SimpleDBus::Interface {
     // ----- METHODS -----
 
     // ----- PROPERTIES -----
-    std::string UUID();
+    BluetoothUUID UUID();
 
   protected:
     void property_changed(std::string option_name) override;
 
-    std::string _uuid;
+    BluetoothUUID _uuid;
 };
 
 }  // namespace SimpleBluez

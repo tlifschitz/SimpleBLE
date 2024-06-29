@@ -1,5 +1,6 @@
 #pragma once
 
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Proxy.h>
 
 #include <simplebluez/Characteristic.h>
@@ -14,13 +15,13 @@ class Device : public SimpleDBus::Proxy {
     Device(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~Device();
 
-    std::shared_ptr<Service> get_service(const std::string& uuid);
-    std::shared_ptr<Characteristic> get_characteristic(const std::string& service_uuid,
-                                                       const std::string& characteristic_uuid);
+    std::shared_ptr<Service> get_service(const BluetoothUUID& uuid);
+    std::shared_ptr<Characteristic> get_characteristic(const BluetoothUUID& service_uuid,
+                                                       const BluetoothUUID& characteristic_uuid);
 
     // ----- PROPERTIES -----
     std::vector<std::shared_ptr<Service>> services();
-    std::vector<std::string> uuids();
+    std::vector<BluetoothUUID> uuids();
 
     std::string address();
     std::string address_type();

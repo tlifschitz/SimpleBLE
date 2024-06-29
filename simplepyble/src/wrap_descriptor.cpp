@@ -17,5 +17,5 @@ constexpr auto kDocsDescriptorUuid = R"pbdoc(
 void wrap_descriptor(py::module& m) {
     // TODO: Add __str__ and __repr__ methods
     py::class_<SimpleBLE::Descriptor>(m, "Descriptor", kDocsDescriptor)
-        .def("uuid", &SimpleBLE::Descriptor::uuid, kDocsDescriptorUuid);
+        .def("uuid", [](SimpleBLE::Descriptor& s) { return s.uuid().str(); }, kDocsDescriptorUuid);
 }

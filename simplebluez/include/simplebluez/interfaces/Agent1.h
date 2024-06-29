@@ -1,5 +1,7 @@
 #pragma once
 
+#include <simplebluez/Types.h>
+#include <simplebluez/Types.h>
 #include <simpledbus/advanced/Interface.h>
 #include <simpledbus/external/kvn_safe_callback.hpp>
 
