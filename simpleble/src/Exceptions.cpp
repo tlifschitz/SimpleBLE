@@ -10,13 +10,14 @@ NotConnected::NotConnected() : BaseException("Peripheral is not connected.") {}
 
 InvalidReference::InvalidReference() : BaseException("Underlying reference to object is invalid.") {}
 
-ServiceNotFound::ServiceNotFound(BluetoothUUID uuid) : BaseException("Service with UUID " + uuid + " not found.") {}
+ServiceNotFound::ServiceNotFound(BluetoothUUID uuid)
+    : BaseException("Service with UUID " + uuid.str() + " not found.") {}
 
 CharacteristicNotFound::CharacteristicNotFound(BluetoothUUID uuid)
-    : BaseException("Characteristic with UUID " + uuid + " not found") {}
+    : BaseException("Characteristic with UUID " + uuid.str() + " not found") {}
 
 DescriptorNotFound::DescriptorNotFound(BluetoothUUID uuid)
-    : BaseException("Descriptor with UUID " + uuid + " not found") {}
+    : BaseException("Descriptor with UUID " + uuid.str() + " not found") {}
 
 OperationNotSupported::OperationNotSupported() : BaseException("The requested operation is not supported.") {}
 

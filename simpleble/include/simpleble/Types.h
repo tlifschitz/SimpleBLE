@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "external/kvn_bytearray.h"
+#include "external/kvn_uuid.h"
 
 /**
  * @file Types.h
@@ -14,9 +15,11 @@ namespace SimpleBLE {
 
 using BluetoothAddress = std::string;
 
-// IDEA: Extend BluetoothUUID to include a `uuid` function that
-// returns the same string, but provides a homogeneous interface.
-using BluetoothUUID = std::string;
+/**
+ * @typedef BluetoothUUID
+ * @brief Provides an homogenous interface to build and manage bluetooth UUIDs.
+ */
+using BluetoothUUID = kvn::uuid;
 
 /**
  * @typedef ByteArray

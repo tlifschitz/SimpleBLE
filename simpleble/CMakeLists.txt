@@ -373,6 +373,7 @@ if(SIMPLEBLE_TEST)
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_utils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_bytearray.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/src/test_uuid.cpp
     )
 
     set_target_properties(simpleble_test PROPERTIES
