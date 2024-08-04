@@ -1,0 +1,71 @@
+name: Hardware In The Loop Testing
+
+on:
+  workflow_call:  # This allows it to be called from ci_main.yml
+
+
+jobs:
+  hardware_in_the_loop:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Download artifacts
+      uses: actions/github-script@v6
+      with:
+        script: |
+          var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: ${{github.event.workflow_run.id }},
+          });
+          var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+            return artifact.name.startsWith("simpleble_");
+          })[0];
+          var download = await github.rest.actions.downloadArtifact({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             artifact_id: matchArtifact.id,
+             archive_format: 'zip',
+          });
+          var fs = require('fs');
+          fs.writeFileSync('${{github.workspace}}/simpleble.zip', Buffer.from(download.data));
+
+    - name: Extract SimpleBLE artifact
+      run: unzip simpleble.zip -d simpleble
+
+    - name: Detect if DUT is connected
+      run: |
+        if ! ./scripts/check_dut_connected.sh; then
+          echo "DUT not connected"
+          exit 1
+        fi
+
+    - name: Check DUT version
+      id: check_version
+      run: |
+        DUT_VERSION=$(./scripts/get_dut_version.sh)
+        REPO_VERSION=$(cat firmware_version.txt)
+        echo "DUT_VERSION=$DUT_VERSION" >> $GITHUB_ENV
+        echo "REPO_VERSION=$REPO_VERSION" >> $GITHUB_ENV
+
+    - name: Build and flash firmware if needed
+      if: env.DUT_VERSION != env.REPO_VERSION
+      run: |
+        ./scripts/build_firmware.sh
+        ./scripts/flash_firmware.sh
+
+    - name: Build tests using CMake
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest
