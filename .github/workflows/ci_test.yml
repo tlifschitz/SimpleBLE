@@ -1,6 +1,8 @@
 name: CI Test
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  workflow_call:  # This allows it to be called from ci_main.yml
 
 jobs:
 
