@@ -104,9 +104,9 @@ jobs:
       max-parallel: 4
       matrix:
         library: [
-          {lib: simpledbus, name: SimpleDBus},
-          {lib: simplebluez, name: SimpleBluez},
-          {lib: simpleble, name: SimpleBLE},
+          {lib: simpledbus, name: SimpleDBus, deps: external,simpledbus},
+          {lib: simplebluez, name: SimpleBluez, deps: external,simpledbus,simplebluez},
+          {lib: simpleble, name: SimpleBLE, deps: external,simpledbus,simplebluez,simpleble},
         ]
         options: [
           {container: dockcross/linux-x64, target: linux-x64},
@@ -121,7 +121,17 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v3
 
+      - name: Cache ${{ matrix.library.name }} build
+        id: cache-lib
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/build_${{ matrix.library.lib }}
+            ${{ github.workspace }}/artifacts
+          key: ${{ matrix.library.lib }}-${{ matrix.options.target }}-${{ matrix.type }}-${{ hashFiles(format('{0}/**', matrix.library.deps)) }}
+
       - name: Build Expat
+        if: steps.cache-lib.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/libexpat/libexpat.git /tmp/libexpat
           cd /tmp/libexpat/expat
@@ -131,6 +141,7 @@ jobs:
           cmake --install /tmb/expat/build --prefix /tmp/expat/install
 
       - name: Build DBus
+        if: steps.cache-lib.outputs.cache-hit != 'true'
         run: |
           git clone https://gitlab.freedesktop.org/dbus/dbus.git /tmp/dbus
 
@@ -141,6 +152,7 @@ jobs:
           cmake --install /tmb/dbus/build --prefix /tmp/dbus/install
 
       - name: Build ${{ matrix.library.name }}
+        if: steps.cache-lib.outputs.cache-hit != 'true'
         run: |
           GITHUB_WORKSPACE=$(pwd)
 
