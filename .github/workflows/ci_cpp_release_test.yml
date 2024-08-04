@@ -1,9 +1,9 @@
 name: Cpp Release Test
 
 on:
-  # push:
-  # pull_request:
   workflow_dispatch:
+  workflow_call:  # This allows it to be called from ci_main.yml
+
 
 jobs:
   # ------------------------------------------------------------

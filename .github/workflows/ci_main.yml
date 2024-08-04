@@ -1,0 +1,35 @@
+name: CI Main
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    uses: ./.github/workflows/ci_lint.yml
+
+  docs:
+    uses: ./.github/workflows/ci_docs.yml
+
+  test:
+    uses: ./.github/workflows/ci_test.yml
+  
+  cpp_release_test:
+    needs: [test]
+    uses: ./.github/workflows/ci_cpp_release_test.yml
+
+  py_release_test:
+    needs: [cpp_release_test]
+    uses: ./.github/workflows/ci_py_release_test.yml
+
+  rust_build:
+    needs: [cpp_release_test]
+    uses: ./.github/workflows/ci_rust_build.yml
+
+  build_examples:
+    needs: [cpp_release_test, py_release_test, rust_build]
+    uses: ./.github/workflows/ci_build_examples.yml
+
+  #hil_test:
+  #  needs: [cpp_release_test]
+  #  uses: ./.github/workflows/ci_hil_test.yml
