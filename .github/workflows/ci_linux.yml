@@ -124,17 +124,16 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v3
 
-      - name: Build DBus
-        uses: ./.github/actions/build-dbus
-
       - name: Cache ${{ matrix.library.name }} build
         id: cache-lib
         uses: actions/cache@v3
         with:
-          path: |
-            ${{ github.workspace }}/build_${{ matrix.library.lib }}
-            ${{ github.workspace }}/artifacts
+          path: ${{ github.workspace }}/build_${{ matrix.library.lib }}/CMakeCache.txt
           key: ${{ matrix.library.lib }}-${{ matrix.options.target }}-${{ matrix.type }}-${{ hashFiles(format('{0}/**', matrix.library.deps)) }}
+
+      - name: Build DBus
+        if: steps.cache-lib.outputs.cache-hit != 'true'
+        uses: ./.github/actions/build-dbus
 
       - name: Build ${{ matrix.library.name }}
         if: steps.cache-lib.outputs.cache-hit != 'true'
@@ -157,6 +156,7 @@ jobs:
           zip -r $GITHUB_WORKSPACE/artifacts/${{ matrix.library.lib }}_${{ matrix.type }}_${{ matrix.options.target }}.zip $GITHUB_WORKSPACE/build_${{ matrix.library.lib }}/install
 
       - name: Upload binaries to job
+        if: steps.cache-lib.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.library.lib }}_${{ matrix.type }}_${{ matrix.options.target }}
