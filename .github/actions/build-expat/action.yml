@@ -1,0 +1,35 @@
+name: 'Build Expat'
+description: 'Clone and build Expat'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set env
+      shell: bash
+      run: |
+        echo "EXPAT_ROOT=${{ github.workspace }}/expat/install" >> $GITHUB_ENV
+        echo "CMAKE_PREFIX_PATH=${{ github.workspace }}/expat/install:$CMAKE_PREFIX_PATH" >> $GITHUB_ENV
+
+    - name: Get latest Expat commit hash
+      id: expat-hash
+      shell: bash
+      run: |
+        EXPAT_HASH=$(curl -s https://api.github.com/repos/libexpat/libexpat/commits/master | jq -r .sha)
+        echo "value=$EXPAT_HASH" >> $GITHUB_OUTPUT
+
+    - name: Cache Expat
+      id: cache-expat
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/expat/install
+        key: ${{ runner.os }}-expat-${{ steps.expat-hash.outputs.value }}
+
+    - name: Build Expat
+      if: steps.cache-expat.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        git clone https://github.com/libexpat/libexpat.git ${{ github.workspace }}/expat
+        cd ${{ github.workspace }}/expat/expat
+        cmake -B build -DEXPAT_BUILD_DOCS=OFF -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
+        cmake --build build --config Release --parallel 4
+        cmake --install build --prefix ${{ github.workspace }}/expat/install
