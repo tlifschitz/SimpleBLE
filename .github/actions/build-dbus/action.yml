@@ -4,6 +4,14 @@ description: 'Clone and build DBus'
 runs:
   using: "composite"
   steps:
+    - name: Install Dependencies
+      shell: bash
+      env:
+          DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -H apt-get update -y
+        sudo -H apt-get install -y jq 
+
     - name: Build Expat
       uses: ./.github/actions/build-expat
 

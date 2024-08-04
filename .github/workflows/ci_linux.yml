@@ -100,7 +100,7 @@ jobs:
         working-directory: ./simplepyble/test
   
   cpp-release-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
