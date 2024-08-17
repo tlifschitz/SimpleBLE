@@ -1,0 +1,160 @@
+name: CI Main
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - name: Print event details
+        run: |
+          echo "This run was triggered by $GITHUB_EVENT_NAME event."
+          cat $GITHUB_EVENT_PATH | jq .
+      - name: Detect duplicate runs
+        id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5.3.1
+        with:
+          concurrent_skipping: 'same_content_newer'
+          skip_after_successful_duplicate: 'true'
+
+  changes:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      common: ${{ steps.filter.outputs.common }}
+      linux: ${{ steps.filter.outputs.linux }}
+      windows: ${{ steps.filter.outputs.windows }}
+      macos: ${{ steps.filter.outputs.macos }}
+      python: ${{ steps.filter.outputs.python }}
+      rust: ${{ steps.filter.outputs.rust }}
+      docs: ${{ steps.filter.outputs.docs }}
+      ci: ${{ steps.filter.outputs.ci }}
+      changes: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Clone Repository 
+        uses: actions/checkout@v4
+      - name: Detect file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            ci: &ci
+              - '.github/workflows/**'
+              - '.github/actions/**'
+            common: &common
+              - 'examples/simpleble/**'
+              - 'simpleble/src/builders/**'
+              - 'simpleble/src/external/**'
+              - 'simpleble/src/frontends/**'
+              - 'simpleble/src/backends/common/**'
+              - 'external/**'
+            windows: &windows
+              - *ci
+              - *common
+              - 'simpleble/src/backends/windows/**'
+            linux: &linux
+              - *ci
+              - *common
+              - 'simpleble/src/backends/linux/**'
+              - 'simpledbus/**'
+              - 'simplebluez/**'
+            macos: &macos
+              - *ci
+              - *common
+              - 'simpleble/src/backends/macos/**'
+            python:
+              - *ci
+              - 'simpleble/src/backends/plain/**'
+              - 'simpleble/src/frontends/**'
+              - 'simplepyble/**'
+            rust:
+              - *ci
+              - 'simplersble/**'
+              - *linux
+              - *macos
+            docs:
+              - *ci
+              - 'docs/**'
+
+  libraries:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      values: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Clone Repository 
+        uses: actions/checkout@v4
+      - name: Detect file changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            simpledbus: &simpledbus
+              - '.github/workflows/**'
+              - '.github/actions/**'
+              - 'simpledbus/**'
+              - 'external/**'
+            simplebluez: &simplebluez
+              - *simpledbus
+              - 'simplebluez/**'
+            simpleble: &simpleble
+              - *simplebluez
+              - 'simpleble/**'
+
+  lint:
+    needs: pre_job
+    if:  |
+      needs.pre_job.outputs.should_skip != 'true'
+    uses: ./.github/workflows/ci_lint.yml
+
+  docs:
+    needs: [pre_job, changes]
+    if:  |
+      needs.pre_job.outputs.should_skip != 'true' &&
+      needs.changes.outputs.docs == 'true'
+    uses: ./.github/workflows/ci_docs.yml
+  
+  windows:
+    needs: [pre_job, changes]
+    if: |
+      needs.pre_job.outputs.should_skip != 'true' &&
+      needs.changes.outputs.windows == 'true'
+    uses: ./.github/workflows/ci_windows.yml
+
+  linux:
+    needs: [pre_job, changes, libraries]
+    if: |
+      needs.pre_job.outputs.should_skip != 'true' &&
+      needs.changes.outputs.linux == 'true'
+    uses: ./.github/workflows/ci_linux.yml
+    with:
+      libraries: ${{ needs.libraries.outputs.values }}
+
+  macos:
+    needs: [pre_job, changes]
+    if: |
+      needs.pre_job.outputs.should_skip != 'true' &&
+      needs.changes.outputs.macos == 'true'
+    uses: ./.github/workflows/ci_macos.yml
+  
+  python:
+    needs: [pre_job, changes]
+    if:  |
+      needs.pre_job.outputs.should_skip != 'true' &&
+      needs.changes.outputs.python == 'true'
+    uses: ./.github/workflows/ci_python.yml
