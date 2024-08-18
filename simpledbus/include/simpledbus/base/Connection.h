@@ -12,7 +12,7 @@ class Connection {
   public:
     Connection(::DBusBusType dbus_bus_type);
     ~Connection();
-
+    static constexpr bool dummy = false;
     void init();
     void uninit();
     bool is_initialized();
