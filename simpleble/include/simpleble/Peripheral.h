@@ -46,6 +46,8 @@ class SIMPLEBLE_EXPORT Peripheral {
     bool is_paired();
     void unpair();
 
+    static constexpr uint32_t dummy = 44;
+
     /**
      * @brief Provides a list of all services that are available on the peripheral.
      *
