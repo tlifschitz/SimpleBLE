@@ -12,6 +12,8 @@ class Bluez {
 
     SimpleBluez::Bluez bluez;
 
+  static constexpr bool dummy = true;
+
   private:
     Bluez();
     ~Bluez();
