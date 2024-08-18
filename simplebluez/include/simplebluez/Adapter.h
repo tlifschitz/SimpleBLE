@@ -15,6 +15,7 @@ class Adapter : public SimpleDBus::Proxy {
 
     Adapter(std::shared_ptr<SimpleDBus::Connection> conn, const std::string& bus_name, const std::string& path);
     virtual ~Adapter();
+    static constexpr bool dummy = false;
 
     std::string identifier() const;
     std::string address();
