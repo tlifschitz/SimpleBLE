@@ -51,6 +51,7 @@ class AdapterBase {
     void delegate_did_connect_peripheral(void* opaque_peripheral);
     void delegate_did_fail_to_connect_peripheral(void* opaque_peripheral, void* opaque_error);
     void delegate_did_disconnect_peripheral(void* opaque_peripheral, void* opaque_error);
+    static constexpr bool dummy = true;
 
   protected:
     /**
