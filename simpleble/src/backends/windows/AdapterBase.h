@@ -32,7 +32,7 @@ class AdapterBase {
     virtual ~AdapterBase();
 
     void* underlying() const;
-
+    static constexpr bool dummy = false;
     std::string identifier();
     BluetoothAddress address();
 
