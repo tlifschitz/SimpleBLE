@@ -28,7 +28,7 @@ class SIMPLEBLE_EXPORT Adapter {
 
     void scan_start();
     void scan_stop();
-    void scan_for(int timeout_ms);
+    void scan_for());
     bool scan_is_active();
     std::vector<Peripheral> scan_get_results();
 
