@@ -187,9 +187,9 @@ jobs:
     steps:
 
       - name: "Download Python Source Dist"
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: 'simplepyble.tar.gz'
+          name: 'simplepyble.zip'
   
       - name: Check packages
         run: twine check dist/*.tar.gz
@@ -201,7 +201,7 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
       - name: "Download Python Wheels"
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: 'simpleble-wheels-*'
 
@@ -211,10 +211,10 @@ jobs:
           ls *.whl
       
       - name: Check Packages
-        run: twine check wheelhouse/*.whl
+        run: twine check *.whl
 
       - name: Publish packages to PyPi
-        run: twine upload --skip-existing wheelhouse/*.whl --verbose
+        run: twine upload --skip-existing *.whl --verbose
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
