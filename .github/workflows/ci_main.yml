@@ -144,21 +144,21 @@ jobs:
     needs: [pre_job, changes]
     if:  |
       needs.pre_job.outputs.should_skip != 'true' &&
-      needs.changes.outputs.docs == 'true'
+      (needs.changes.outputs.docs == 'true' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/ci_docs.yml
   
   windows:
     needs: [pre_job, changes]
     if: |
       needs.pre_job.outputs.should_skip != 'true' &&
-      needs.changes.outputs.windows == 'true'
+      (needs.changes.outputs.windows == 'true' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/ci_windows.yml
 
   linux:
     needs: [pre_job, changes, libraries]
     if: |
       needs.pre_job.outputs.should_skip != 'true' &&
-      needs.changes.outputs.linux == 'true'
+      (needs.changes.outputs.linux == 'true' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/ci_linux.yml
     with:
       libraries: ${{ needs.libraries.outputs.values }}
@@ -167,12 +167,12 @@ jobs:
     needs: [pre_job, changes]
     if: |
       needs.pre_job.outputs.should_skip != 'true' &&
-      needs.changes.outputs.macos == 'true'
+      (needs.changes.outputs.macos == 'true' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/ci_macos.yml
   
   python:
     needs: [pre_job, changes]
     if:  |
       needs.pre_job.outputs.should_skip != 'true' &&
-      needs.changes.outputs.python == 'true'
+      (needs.changes.outputs.python == 'true' || github.ref == 'refs/heads/main')
     uses: ./.github/workflows/ci_python.yml
