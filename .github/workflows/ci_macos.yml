@@ -3,17 +3,7 @@ name: CI Macos
 on:
   workflow_dispatch:
   workflow_call:  # This allows it to be called from ci_main.yml
-    inputs:
-      rust:
-        description: "Build Rust Bindings"
-        type: boolean
-        default: true
-        required: false
-      python:
-        description: "Build Python Wheels"
-        type: boolean
-        default: true
-        required: false
+
 jobs:
   tests:
     runs-on: macos-12
@@ -85,15 +75,14 @@ jobs:
           path: artifacts/simpleble_${{ matrix.type }}_macos-${{ matrix.arch }}.zip
 
   python:
-    if: ${{ inputs.python }}
-    needs: [tests, examples]
+    needs: [build]
     uses: ./.github/workflows/ci_wheels.yml
     with:
       os: macos-12
 
   rust:
     runs-on: ${{ matrix.os }}
-    needs: [tests, examples]
+    needs: [build]
 
     strategy:
       fail-fast: false

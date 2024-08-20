@@ -9,16 +9,7 @@ on:
         type: string
         default: '["simpledbus","simplebluez","simpleble"]'
         required: false
-      rust:
-        description: "Build Rust Bindings"
-        type: boolean
-        default: true
-        required: false
-      python:
-        description: "Build Python Wheels"
-        type: boolean
-        default: true
-        required: false
+
 jobs:
   tests:
     runs-on: ubuntu-22.04
@@ -181,16 +172,14 @@ jobs:
           path: artifacts/${{ matrix.library }}_${{ matrix.type }}_${{ matrix.options.target }}.zip
 
   python:
-    if: ${{ inputs.python }}
-    needs: [tests, examples]
+    needs: [build]
     uses: ./.github/workflows/ci_wheels.yml
     with:
       os: ubuntu-22.04
 
   rust:
-    if: ${{ inputs.rust }}
     runs-on: ${{ matrix.os }}
-    needs: [tests, examples]
+    needs: [build]
 
     strategy:
       fail-fast: false
