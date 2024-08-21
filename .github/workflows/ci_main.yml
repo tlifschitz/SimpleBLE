@@ -193,7 +193,9 @@ jobs:
           path: 'sdist'
   
       - name: Check packages
-        run: twine check sdist/simplepyble*.tar.gz
+        run: |
+          pip3 install twine
+          twine check sdist/simplepyble*.tar.gz
 
       - name: Publish packages
         run: twine upload --skip-existing sdist/simplepyble*.tar.gz --verbose
