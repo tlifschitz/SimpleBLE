@@ -1,14 +1,11 @@
 import argparse
 import os
 import pathlib
-import re
-import subprocess
 import sys
-import xml.etree.ElementTree as ElementTree
 
 import pybind11
 import skbuild
-
+import versioningit
 
 def exclude_unnecessary_files(cmake_manifest):
     def is_necessary(name):
@@ -24,31 +21,6 @@ def exclude_unnecessary_files(cmake_manifest):
     return list(filter(is_necessary, cmake_manifest))
 
 
-def get_pypi_versions(package_name, test_repo=False):
-    url = f"https://{'test.' if test_repo else ''}pypi.org/rss/project/{package_name}/releases.xml"
-    result = subprocess.run(
-        ['curl', '-s', '-w', '%{http_code}', '-o', '-', url],
-        capture_output=True,
-        text=True
-    )
-    response_code = result.stdout[-3:]
-    content = result.stdout[:-3].strip()
-    if response_code == '200':
-        try:
-            root = ElementTree.fromstring(content)
-            versions = [item.find('title').text for item in root.findall('.//item')]
-            return versions
-        except ElementTree.ParseError:
-            print(f"\033[91mERROR: Could not parse XML:\n\n {content}\033[0m")
-            return None
-    else:
-        print(f"\033[91mWARNING: Could not fetch {url}: {response_code}\033[0m")
-        return None
-
-def get_last_pypi_version(package_name, test_repo=False):
-    versions = get_pypi_versions(package_name, test_repo)
-    return versions[0] if versions else None
-
 argparser = argparse.ArgumentParser(add_help=False)
 argparser.add_argument(
     "--plain", help="Use Plain SimpleBLE", required=False, action="store_true"
@@ -59,23 +31,7 @@ sys.argv = [sys.argv[0]] + unknown
 root = pathlib.Path(__file__).parent.resolve()
 
 # Generate the version string
-version_str = (root / "VERSION").read_text(encoding="utf-8").strip()
-tag = subprocess.run(["git", "describe", "--tags", "--exact-match"], capture_output=True, text=True).stdout.strip()
-ref = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True).stdout.strip()
-    
-if tag:
-    if tag != version_str:
-        print(f"\033[91mWARNING: Repo VERSION ({version_str}) differs from tag ({tag}), ref: {ref}\033[0m")
-else:
-    # If the ref is not tagged (a release), PyPi pre-release version is increased automatically
-    last_version = get_last_pypi_version("simplepyble")
-    if last_version:
-        last_dev = re.search(r'dev(\d+)', last_version)
-        if version_str not in last_version:
-            print(f"\033[91mWARNING: Repo VERSION ({version_str}) differs from last PyPi version ({last_version}), ref: {ref}\033[0m")
-        else:
-            print(f"\033[92mRepo VERSION ({version_str}) matches last PyPi version ({last_version}), ref: {ref}\033[0m")
-        version_str += f".dev{0 if last_dev is None else int(last_dev.group(1)) + 1 }"
+version_str = versioningit.get_version()
 
 # Get the long description from the README file
 long_description = (root / "simplepyble" / "README.rst").read_text(encoding="utf-8")
