@@ -5,7 +5,7 @@ import sys
 
 import pybind11
 import skbuild
-
+import versioningit
 
 def exclude_unnecessary_files(cmake_manifest):
     def is_necessary(name):
@@ -31,9 +31,7 @@ sys.argv = [sys.argv[0]] + unknown
 root = pathlib.Path(__file__).parent.resolve()
 
 # Generate the version string
-# TODO: Make the dev portion smarter by looking at tags.
-version_str = (root / "VERSION").read_text(encoding="utf-8").strip()
-version_str += ".dev1"  # ! Ensure it matches the intended release version!
+version_str = versioningit.get_version()
 
 # Get the long description from the README file
 long_description = (root / "simplepyble" / "README.rst").read_text(encoding="utf-8")
