@@ -21,7 +21,7 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -H apt-get update -y
-        sudo -H apt-get install -y dbus libdbus-1-dev python3-dev
+        sudo -H apt-get install -y libdbus-1-dev python3-dev
         sudo -H pip3 install -r $GITHUB_WORKSPACE/simpledbus/test/requirements.txt
         echo "Runing for libraries: ${{ inputs.libraries }}"
     - name: Setup cmake
@@ -30,11 +30,18 @@ jobs:
     - name: Setup gtest
       uses: ./.github/actions/setup-gtest
 
+    - name: Build DBus with logging enabled
+      uses: ./.github/actions/build-dbus
+      with:
+        os: ${{ runner.os }}
+        arch: linux-x64
+        verbose: true
+
     - name: Start DBus
       run: |
         export DBUS_VERBOSE=1
         export DBUS_DEBUG_OUTPUT=1
-        echo "DBUS_SESSION_BUS_ADDRESS=$(dbus-daemon --config-file=/usr/share/dbus-1/session.conf --print-address --fork --nosyslog 2> dbus_daemon.log | cut -d, -f1)" >> $GITHUB_ENV
+        echo "DBUS_SESSION_BUS_ADDRESS=$(/tmp/dbus/install/bin/dbus-daemon --config-file=/usr/share/dbus-1/session.conf --print-address --fork --nosyslog 2> dbus_daemon.log | cut -d, -f1)" >> $GITHUB_ENV
 
     - name: SimpleDBus Unit Tests
       if: contains(inputs.libraries, 'simpledbus')
