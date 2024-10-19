@@ -1,0 +1,72 @@
+[package]
+name = "simpledut"
+version = "0.1.0"
+authors = ["Tobias Lifschitz <tlifschitz@itba.edu.ar>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+
+[dependencies]
+aes                 = "0.8.4"
+bleps               = { git = "https://github.com/bjoernQ/bleps", package = "bleps", rev = "a5148d8ae679e021b78f53fd33afb8bb35d0b62e", features = [ "macros", "async"] }
+cfg-if              = "1.0.0"
+critical-section    = "1.1.2"
+crypto-bigint       = { version = "0.5.5", default-features = false }
+elliptic-curve      = { version = "0.13.8", default-features = false, features = ["sec1"] }
+embassy-executor    = { version = "0.5.0", features = ["task-arena-size-40960"] }
+embassy-futures     = "0.1.1"
+embassy-net = { version = "0.4.0", features = [ "tcp", "udp", "dhcpv4", "medium-ethernet"] }
+embassy-sync        = "0.6.0"
+embassy-time        = "0.3.1"
+embassy-time-driver = { version = "0.1.0", optional = true }
+embassy-usb         = { version = "0.2.0", default-features = false, optional = true }
+embedded-can        = "0.4.1"
+embedded-graphics   = "0.8.1"
+embedded-hal        = "1.0.0"
+embedded-hal-02     = { version = "0.2.7", package = "embedded-hal", features = ["unproven"] }
+embedded-hal-async  = "1.0.0"
+embedded-hal-bus    = "0.2.0"
+embedded-io         = { version = "0.6.1", default-features = false }
+embedded-io-async   = "0.6.1"
+embedded-storage    = "0.3.1"
+esp-backtrace       = { version = "0.13.0", features = ["esp32", "exception-handler", "panic-handler", "println"] }
+esp-hal             = { version = "0.19.0", features = ["esp32", "async", "log"] }
+esp-hal-embassy     = { version = "0.2.0", features = ["esp32"] }
+esp-hal-smartled    = { version = "0.12.0", optional = true }
+esp-ieee802154      = { version = "0.1.0", optional = true }
+esp-println         = { version = "0.10.0", features = ["esp32", "log"] }
+esp-storage         = { version = "0.3.0", optional = true }
+esp-wifi            = { version = "0.7.1", features = ["esp32", "wifi", "ble"] }
+fugit               = "0.3.7"
+heapless            = "0.8.0"
+hex-literal         = "0.4.1"
+hmac                = { version = "0.12.1", default-features = false }
+ieee802154          = "0.6.1"
+lis3dh-async        = "0.9.3"
+log                 = "0.4.22"
+nb                  = "1.1.0"
+p192                = { version = "0.13.0", default-features = false, features = ["arithmetic"] }
+p256                = { version = "0.13.2", default-features = false, features = ["arithmetic"] }
+portable-atomic     = { version = "1.6.0",  default-features = false }
+sha2                = { version = "0.10.8", default-features = false }
+smart-leds          = "0.4.0"
+smoltcp             = { version = "0.11.0", default-features = false, features = [ "medium-ethernet", "socket-raw"] }
+ssd1306             = "0.8.4"
+static_cell         = { version = "2.1.0", features = ["nightly"] }
+usb-device          = "0.3.2"
+usbd-serial         = "0.2.2"
+
+
+[profile.dev]
+# Rust debug is too slow.
+# For debug builds always builds with some optimization
+opt-level = "s"
+
+[profile.release]
+codegen-units = 1 # LLVM can perform better optimizations using a single thread
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 2
+overflow-checks = false
