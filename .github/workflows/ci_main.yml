@@ -134,12 +134,6 @@ jobs:
             simpleble: &simpleble
               - *simplebluez
               - 'simpleble/**'
-      - name: Debug Output
-        run: |
-          echo "Current branch: ${{ github.ref }}"
-          echo "Is main branch? ${{ github.ref == 'refs/heads/main' }}"
-          echo "Path filter changes: ${{ steps.filter.outputs.changes }}"
-          echo "Final libraries output: ${{ github.ref == 'refs/heads/main' && '["simpledbus","simplebluez","simpleble"]' || steps.filter.outputs.changes }}"
 
   lint:
     needs: pre_job
