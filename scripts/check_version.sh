@@ -99,7 +99,7 @@ assert_return_value 'check_tag_version_match "" "1.1.1" "1.1.1"' 1 || exit 1
 assert_return_value 'check_tag_version_match "" "1.1.0" "1.1.1"' 1 || exit 1
 assert_return_value 'check_tag_version_match "" "1.1.2" "1.1.1"' 0 || exit 1
 assert_return_value 'check_changelog "1.1.9" ' 1 || exit 1
-assert_return_value 'check_changelog "0.8.0" ' 0 || exit 1
+assert_return_value 'check_changelog "0.7.0" ' 0 || exit 1
 assert_return_value 'check_changelog "" ' 0 || exit 1
 ###############################################################################
 
